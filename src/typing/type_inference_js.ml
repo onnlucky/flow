@@ -5260,6 +5260,11 @@ and mk_signature cx reason_c type_params_map superClass body = Ast.Class.(
       let typeparams, type_params_map =
         mk_type_param_declarations cx type_params_map typeParameters in
 
+      let fields =
+        if name = "constructor" then
+          mine_fields cx type_params_map body fields
+        else fields in
+
       let params_ret = mk_params_ret cx type_params_map
         (params, defaults, rest) (body, returnType) in
       let reason_desc = (match kind with
