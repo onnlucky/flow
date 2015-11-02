@@ -3447,7 +3447,9 @@ and flow_addition cx trace reason l r u =
     rec_flow cx trace (NumT.why reason, u)
 
   | (_, _) ->
-    let fake_str = StrT.why reason in
+    let fake_str = if Context.is_weak cx
+      then MixedT.why reason
+      else StrT.why reason in
     rec_flow cx trace (l, fake_str);
     rec_flow cx trace (r, fake_str);
     rec_flow cx trace (fake_str, u);
@@ -3464,6 +3466,8 @@ and flow_comparator cx trace reason l r =
   else match (l, r) with
   | (StrT _, StrT _) -> ()
   | (_, _) when numeric l && numeric r -> ()
+  | (AnyT _, _) when Context.is_weak cx && numeric r -> ()
+  | (_, AnyT _) when Context.is_weak cx && numeric l -> ()
   | (_, _) -> prerr_flow cx trace "Cannot be compared to" l r
 
 (**
