@@ -3448,7 +3448,7 @@ and flow_addition cx trace reason l r u =
 
   | (_, _) ->
     let fake_str = if Context.is_weak cx
-      then MixedT.why reason
+      then AnyT.why reason
       else StrT.why reason in
     rec_flow cx trace (l, fake_str);
     rec_flow cx trace (r, fake_str);
